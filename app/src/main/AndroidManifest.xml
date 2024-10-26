@@ -13,6 +13,11 @@
         android:theme="@style/Theme.Assignment2CLJM"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivity3"
+            android:exported="false"
+            android:label="@string/title_activity_main3"
+            android:theme="@style/Theme.Assignment2CLJM" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -23,10 +28,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity2"
+        <activity
+            android:name=".MainActivity2"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.assignment2cljm.ACTION_VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

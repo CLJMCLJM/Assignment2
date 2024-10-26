@@ -47,6 +47,12 @@ class MainActivity : ComponentActivity() {
                             val implicitIntent = Intent("com.example.assignment2cljm.ACTION_VIEW")
                             startActivity(implicitIntent)
                         }
+                        Activity3Button(
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            val explicitIntent = Intent(this@MainActivity, MainActivity3::class.java)
+                            startActivity(explicitIntent)
+                        }
                     }
                 }
             }
@@ -74,6 +80,15 @@ fun ImplicitButton(modifier: Modifier = Modifier, onImplicitButtonClick: () -> U
     }
 }
 
+@Composable
+fun Activity3Button(modifier: Modifier = Modifier, onActivity3ButtonClick: () -> Unit) {
+    Column(verticalArrangement = Arrangement.Center, modifier = modifier.padding(8.dp)){
+        Button(onClick = onActivity3ButtonClick, Modifier.padding(16.dp)) {
+            Text(text = "View Image Button")
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun NameAndIDPreview() {
@@ -87,5 +102,13 @@ fun NameAndIDPreview() {
 fun ButtonPreview() {
     Assignment2CLJMTheme {
         ImplicitButton(onImplicitButtonClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Activity3Preview() {
+    Assignment2CLJMTheme {
+        Activity3Button(onActivity3ButtonClick = {})
     }
 }
