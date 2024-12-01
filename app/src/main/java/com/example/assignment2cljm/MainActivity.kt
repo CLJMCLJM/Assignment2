@@ -1,10 +1,14 @@
 package com.example.assignment2cljm
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,41 +23,95 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.example.assignment2cljm.ui.theme.Assignment2CLJMTheme
 
 class MainActivity : ComponentActivity() {
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.d("Permission", "Permission granted")
+                setContent {
+                    MainContent()
+                }
+            } else {
+                Log.d("Permission", "Permission denied")
+                setContent {
+                    PermissionDeniedContent()
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            Assignment2CLJMTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+
+        Log.d("Permission", "onCreate called")
+
+        when {
+            ContextCompat.checkSelfPermission(this, "com.example.assignment2cljm.MSE412") == PackageManager.PERMISSION_GRANTED -> {
+                Log.d("Permission", "Permission already granted")
+                setContent {
+                    MainContent()
+                }
+            }
+            shouldShowRequestPermissionRationale("com.example.assignment2cljm.MSE412") -> {
+                Log.d("Permission", "Should show rationale for permission")
+                requestPermissionLauncher.launch("com.example.assignment2cljm.MSE412")
+            }
+            else -> {
+                Log.d("Permission", "Requesting permission directly")
+                requestPermissionLauncher.launch("com.example.assignment2cljm.MSE412")
+            }
+        }
+    }
+
+    @Composable
+    fun MainContent() {
+        Assignment2CLJMTheme {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    StudentInfo(
+                        modifier = Modifier.padding(4.dp)
                     ) {
-                        StudentInfo(
-                            modifier = Modifier.padding(4.dp)
-                        ) {
-                            val explicitIntent = Intent(this@MainActivity, MainActivity2::class.java)
-                            startActivity(explicitIntent)
-                        }
-                        ImplicitButton(
-                            modifier = Modifier.padding(4.dp)
-                        ) {
-                            val implicitIntent = Intent("com.example.assignment2cljm.ACTION_VIEW")
-                            startActivity(implicitIntent)
-                        }
-                        Activity3Button(
-                            modifier = Modifier.padding(4.dp)
-                        ) {
-                            val explicitIntent = Intent(this@MainActivity, MainActivity3::class.java)
-                            startActivity(explicitIntent)
-                        }
+                        val explicitIntent = Intent(this@MainActivity, MainActivity2::class.java)
+                        startActivity(explicitIntent)
                     }
+                    ImplicitButton(
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        val implicitIntent = Intent("com.example.assignment2cljm.ACTION_VIEW")
+                        startActivity(implicitIntent)
+                    }
+                    Activity3Button(
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        val explicitIntent = Intent(this@MainActivity, MainActivity3::class.java)
+                        startActivity(explicitIntent)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun PermissionDeniedContent() {
+        Assignment2CLJMTheme {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Permission Denied. Please grant permissions to proceed.")
                 }
             }
         }
