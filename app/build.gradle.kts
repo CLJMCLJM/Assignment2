@@ -68,4 +68,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+
 }
